@@ -1,0 +1,1 @@
+iOS platform files go here. For a full Flutter app, run `flutter create .` in this folder or copy the `ios/` folder from an existing Flutter app.

@@ -1,0 +1,12 @@
+name: corfu_shared
+description: Shared package for CorfuHub
+version: 0.1.0
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms: {}

@@ -1,0 +1,15 @@
+name: ch_user_app
+description: CH User App (stub)
+publish_to: "none"
+version: 0.0.1
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=2.5.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  corfu_shared:
+    path: ../shared
+
+flutter:
+  uses-material-design: true

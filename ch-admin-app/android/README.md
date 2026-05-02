@@ -1,0 +1,1 @@
+Android platform files go here. For a full Flutter app, run `flutter create .` in this folder or copy the `android/` folder from an existing Flutter app.
