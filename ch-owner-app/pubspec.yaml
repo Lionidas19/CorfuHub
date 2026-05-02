@@ -1,7 +1,7 @@
-name: ch_owner_app
-description: CH Owner App (stub)
+name: corfu_hub_owner_app
+description: CorfuHub Owner app — owner-facing app for claiming and managing place listings, events and jobs.
 publish_to: "none"
-version: 0.0.1
+version: 0.1.0
 environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=2.5.0"

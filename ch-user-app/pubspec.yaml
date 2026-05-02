@@ -1,0 +1,15 @@
+name: corfu_hub_app
+description: CorfuHub App (Resident) — civic and issues map, reporting, personalization and user-facing features for the Corfu Map Platform.
+publish_to: "none"
+version: 0.1.0
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=2.5.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  corfu_shared:
+    path: ../shared
+
+flutter:
+  uses-material-design: true
