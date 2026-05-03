@@ -1,16 +1,39 @@
 import 'package:flutter/material.dart';
+import 'enums.dart';
 
-/// Simple environment banner wrapper.
-/// Usage: wrap your top-level app widget with `EnvBanner(child: MyApp())`.
+/// Wraps any widget tree with a visible environment badge in non-production builds.
+///
+/// Usage (in your host app's main widget):
+/// ```dart
+/// EnvBanner(
+///   environment: EnvironmentEnum.fromValue(const String.fromEnvironment('ENV')),
+///   child: MyApp(),
+/// )
+/// ```
 class EnvBanner extends StatelessWidget {
   final Widget child;
-  const EnvBanner({super.key, required this.child});
+  final EnvironmentEnum environment;
 
-  static String get env => const String.fromEnvironment('ENV', defaultValue: 'production');
+  const EnvBanner({
+    super.key,
+    required this.child,
+    required this.environment,
+  });
+
+  Color get _color {
+    switch (environment) {
+      case EnvironmentEnum.local:
+        return Colors.green.shade400;
+      case EnvironmentEnum.staging:
+        return Colors.amber.shade400;
+      case EnvironmentEnum.production:
+        return Colors.transparent;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (env == 'production') return child;
+    if (environment.isProduction) return child;
 
     return Stack(
       children: [
@@ -18,13 +41,22 @@ class EnvBanner extends StatelessWidget {
         Positioned(
           top: 8,
           right: 8,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent.withOpacity(0.95),
-              borderRadius: BorderRadius.circular(8),
+          child: IgnorePointer(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: _color.withOpacity(0.92),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                environment.name.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
+                  color: Colors.black87,
+                ),
+              ),
             ),
-            child: Text(env.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       ],

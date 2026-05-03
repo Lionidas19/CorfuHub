@@ -1,19 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:corfu_shared/shared.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() => runApp(const MyApp());
+const _supabaseUrl = String.fromEnvironment(
+  'SUPABASE_URL',
+  defaultValue: 'http://127.0.0.1:54331',
+);
+const _supabaseAnonKey = String.fromEnvironment(
+  'SUPABASE_ANON_KEY',
+  defaultValue: 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
+);
+const _env = String.fromEnvironment('ENV', defaultValue: 'local');
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(url: _supabaseUrl, anonKey: _supabaseAnonKey);
+  final client = Supabase.instance.client;
+
+  final supabaseSource = SupabaseDataSource(client);
+  final cacheSource = CacheDataSource();
+  final mockSource = MockDataSource();
+  final logger = ErrorLoggingService(
+    client: client,
+    sourceProject: 'corfu_hub_owner_app',
+  );
+
+  final repository = AppRepositoryImpl(
+    supabase: supabaseSource,
+    cache: cacheSource,
+    mock: mockSource,
+    logger: logger,
+  );
+
+  runApp(
+    Provider<AppRepository>.value(
+      value: repository,
+      child: EnvBanner(
+        environment: EnvironmentEnum.fromValue(_env),
+        child: const CorfuHubOwnerApp(),
+      ),
+    ),
+  );
+}
+
+class CorfuHubOwnerApp extends StatelessWidget {
+  const CorfuHubOwnerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return EnvBanner(
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('CH Owner App stub')),
-        ),
+    return const MaterialApp(
+      title: 'CorfuHub Owner',
+      home: Scaffold(
+        body: Center(child: Text('Owner App — Coming Soon')),
       ),
     );
   }
 }
+

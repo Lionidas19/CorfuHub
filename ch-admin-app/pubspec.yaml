@@ -10,6 +10,7 @@ dependencies:
     sdk: flutter
   corfu_shared:
     path: ../shared
+  provider: ^6.1.2
 
 flutter:
   uses-material-design: true
