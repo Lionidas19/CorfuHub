@@ -101,6 +101,16 @@ class AppRepositoryImpl implements AppRepository {
     await _cache.clearAll();
   }
 
+  @override
+  Future<UserEntity> debugSignInAsUser(String userId) async {
+    final model = await _supabase.getUserById(userId);
+    if (model == null) {
+      throw Exception('Debug user $userId not found in public.users');
+    }
+    await _cache.saveCurrentUser(model);
+    return model.toEntity();
+  }
+
   // ---------------------------------------------------------------------------
   // User Settings
   // ---------------------------------------------------------------------------
@@ -124,9 +134,11 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<UserSettingsEntity> saveUserSettings(UserSettingsEntity settings) async {
+  Future<UserSettingsEntity> saveUserSettings(
+      UserSettingsEntity settings) async {
     await _requireOnline('saveUserSettings');
-    final model = await _supabase.saveUserSettings(UserSettingsModel.fromEntity(settings));
+    final model = await _supabase
+        .saveUserSettings(UserSettingsModel.fromEntity(settings));
     await _cache.saveUserSettings(model);
     return model.toEntity();
   }
@@ -136,8 +148,7 @@ class AppRepositoryImpl implements AppRepository {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<List<PlaceEntity>> getPlaces({String? categoryId}) =>
-      _getList(
+  Future<List<PlaceEntity>> getPlaces({String? categoryId}) => _getList(
         source: 'places.getPlaces',
         getCache: () async {
           final all = await _cache.getPlaces();
@@ -154,16 +165,14 @@ class AppRepositoryImpl implements AppRepository {
       );
 
   @override
-  Future<PlaceEntity?> getPlace(String placeId) =>
-      _getOne(
+  Future<PlaceEntity?> getPlace(String placeId) => _getOne(
         source: 'places.getPlace',
         fetchRemote: () => _supabase.getPlace(placeId),
         toEntity: (m) => m.toEntity(),
       );
 
   @override
-  Future<List<PlaceEntity>> getFeaturedPlaces() =>
-      _getList(
+  Future<List<PlaceEntity>> getFeaturedPlaces() => _getList(
         source: 'places.getFeaturedPlaces',
         getCache: _cache.getFeaturedPlaces,
         fetchRemote: _supabase.getFeaturedPlaces,
@@ -186,7 +195,9 @@ class AppRepositoryImpl implements AppRepository {
           .toList();
     }
     try {
-      return (await _supabase.searchPlaces(query)).map((m) => m.toEntity()).toList();
+      return (await _supabase.searchPlaces(query))
+          .map((m) => m.toEntity())
+          .toList();
     } catch (e, st) {
       if (ConnectivityUtils.isConnectivityError(e)) {
         final cached = await _cache.getPlaces() ?? _mock.getPlaces();
@@ -215,8 +226,7 @@ class AppRepositoryImpl implements AppRepository {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<List<EventEntity>> getEvents({String? placeId}) =>
-      _getList(
+  Future<List<EventEntity>> getEvents({String? placeId}) => _getList(
         source: 'events.getEvents',
         getCache: _cache.getEvents,
         fetchRemote: () => _supabase.getEvents(placeId: placeId),
@@ -226,8 +236,7 @@ class AppRepositoryImpl implements AppRepository {
       );
 
   @override
-  Future<EventEntity?> getEvent(String eventId) =>
-      _getOne(
+  Future<EventEntity?> getEvent(String eventId) => _getOne(
         source: 'events.getEvent',
         fetchRemote: () => _supabase.getEvent(eventId),
         toEntity: (m) => m.toEntity(),
@@ -245,8 +254,7 @@ class AppRepositoryImpl implements AppRepository {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<List<IssueEntity>> getIssues() =>
-      _getList(
+  Future<List<IssueEntity>> getIssues() => _getList(
         source: 'issues.getIssues',
         getCache: _cache.getIssues,
         fetchRemote: _supabase.getIssues,
@@ -256,8 +264,7 @@ class AppRepositoryImpl implements AppRepository {
       );
 
   @override
-  Future<IssueEntity?> getIssue(String issueId) =>
-      _getOne(
+  Future<IssueEntity?> getIssue(String issueId) => _getOne(
         source: 'issues.getIssue',
         fetchRemote: () => _supabase.getIssue(issueId),
         toEntity: (m) => m.toEntity(),
@@ -286,7 +293,8 @@ class AppRepositoryImpl implements AppRepository {
     required String status,
   }) async {
     await _requireOnline('issues.updateIssueStatus');
-    final model = await _supabase.updateIssueStatus(issueId: issueId, status: status);
+    final model =
+        await _supabase.updateIssueStatus(issueId: issueId, status: status);
     return model.toEntity();
   }
 
@@ -315,8 +323,7 @@ class AppRepositoryImpl implements AppRepository {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<List<JobEntity>> getJobs({String? placeId}) =>
-      _getList(
+  Future<List<JobEntity>> getJobs({String? placeId}) => _getList(
         source: 'jobs.getJobs',
         getCache: _cache.getJobs,
         fetchRemote: () => _supabase.getJobs(placeId: placeId),
@@ -326,8 +333,7 @@ class AppRepositoryImpl implements AppRepository {
       );
 
   @override
-  Future<JobEntity?> getJob(String jobId) =>
-      _getOne(
+  Future<JobEntity?> getJob(String jobId) => _getOne(
         source: 'jobs.getJob',
         fetchRemote: () => _supabase.getJob(jobId),
         toEntity: (m) => m.toEntity(),
@@ -349,13 +355,16 @@ class AppRepositoryImpl implements AppRepository {
     required String status,
   }) async {
     await _requireOnline('claims.updateClaimStatus');
-    return (await _supabase.updateClaimStatus(claimId: claimId, status: status)).toEntity();
+    return (await _supabase.updateClaimStatus(claimId: claimId, status: status))
+        .toEntity();
   }
 
   @override
   Future<List<ClaimEntity>> getMyApprovedClaims() async {
     try {
-      return (await _supabase.getMyApprovedClaims()).map((m) => m.toEntity()).toList();
+      return (await _supabase.getMyApprovedClaims())
+          .map((m) => m.toEntity())
+          .toList();
     } catch (e, st) {
       await _logger.log(e, st, source: 'claims.getMyApprovedClaims');
       return [];
@@ -365,7 +374,9 @@ class AppRepositoryImpl implements AppRepository {
   @override
   Future<List<ClaimEntity>> getPendingClaims() async {
     try {
-      return (await _supabase.getPendingClaims()).map((m) => m.toEntity()).toList();
+      return (await _supabase.getPendingClaims())
+          .map((m) => m.toEntity())
+          .toList();
     } catch (e, st) {
       await _logger.log(e, st, source: 'claims.getPendingClaims');
       return [];

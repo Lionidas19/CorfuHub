@@ -46,17 +46,21 @@ class SupabaseDataSource {
   }
 
   Future<UserModel> _fetchUserById(String uid) async {
-    final row = await _client
-        .from('users')
-        .select()
-        .eq('id', uid)
-        .maybeSingle();
+    final row =
+        await _client.from('users').select().eq('id', uid).maybeSingle();
     if (row == null) throw Exception('User not found: $uid');
     return UserModel.fromJson(row);
   }
 
   Future<void> deleteAccount() async {
     await _client.rpc('delete_user_account');
+  }
+
+  /// DEBUG ONLY: Fetch user by ID from public.users without auth
+  Future<UserModel?> getUserById(String userId) async {
+    final row =
+        await _client.from('users').select().eq('id', userId).maybeSingle();
+    return row != null ? UserModel.fromJson(row) : null;
   }
 
   // ---------------------------------------------------------------------------
@@ -91,15 +95,15 @@ class SupabaseDataSource {
     var query = _client.from('places').select().eq('active', true);
     if (categoryId != null) query = query.eq('category_id', categoryId);
     final data = await query;
-    return (data as List).cast<Map<String, dynamic>>().map(PlaceModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(PlaceModel.fromJson)
+        .toList();
   }
 
   Future<PlaceModel?> getPlace(String placeId) async {
-    final row = await _client
-        .from('places')
-        .select()
-        .eq('id', placeId)
-        .maybeSingle();
+    final row =
+        await _client.from('places').select().eq('id', placeId).maybeSingle();
     return row != null ? PlaceModel.fromJson(row) : null;
   }
 
@@ -109,7 +113,10 @@ class SupabaseDataSource {
         .select()
         .eq('active', true)
         .eq('is_featured', true);
-    return (data as List).cast<Map<String, dynamic>>().map(PlaceModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(PlaceModel.fromJson)
+        .toList();
   }
 
   Future<List<PlaceModel>> searchPlaces(String query) async {
@@ -119,7 +126,10 @@ class SupabaseDataSource {
         .select()
         .eq('active', true)
         .or('name.ilike.%$q%,description.ilike.%$q%');
-    return (data as List).cast<Map<String, dynamic>>().map(PlaceModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(PlaceModel.fromJson)
+        .toList();
   }
 
   // ---------------------------------------------------------------------------
@@ -130,15 +140,15 @@ class SupabaseDataSource {
     var query = _client.from('events').select().eq('active', true);
     if (placeId != null) query = query.eq('place_id', placeId);
     final data = await query;
-    return (data as List).cast<Map<String, dynamic>>().map(EventModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(EventModel.fromJson)
+        .toList();
   }
 
   Future<EventModel?> getEvent(String eventId) async {
-    final row = await _client
-        .from('events')
-        .select()
-        .eq('id', eventId)
-        .maybeSingle();
+    final row =
+        await _client.from('events').select().eq('id', eventId).maybeSingle();
     return row != null ? EventModel.fromJson(row) : null;
   }
 
@@ -148,15 +158,15 @@ class SupabaseDataSource {
 
   Future<List<IssueModel>> getIssues() async {
     final data = await _client.from('issues').select().eq('active', true);
-    return (data as List).cast<Map<String, dynamic>>().map(IssueModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(IssueModel.fromJson)
+        .toList();
   }
 
   Future<IssueModel?> getIssue(String issueId) async {
-    final row = await _client
-        .from('issues')
-        .select()
-        .eq('id', issueId)
-        .maybeSingle();
+    final row =
+        await _client.from('issues').select().eq('id', issueId).maybeSingle();
     return row != null ? IssueModel.fromJson(row) : null;
   }
 
@@ -167,7 +177,8 @@ class SupabaseDataSource {
     required double longitude,
   }) async {
     final uid = _client.auth.currentUser?.id;
-    if (uid == null) throw Exception('Must be authenticated to report an issue');
+    if (uid == null)
+      throw Exception('Must be authenticated to report an issue');
     final data = await _client
         .from('issues')
         .insert({
@@ -233,15 +244,15 @@ class SupabaseDataSource {
     var query = _client.from('jobs').select().eq('active', true);
     if (placeId != null) query = query.eq('place_id', placeId);
     final data = await query;
-    return (data as List).cast<Map<String, dynamic>>().map(JobModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(JobModel.fromJson)
+        .toList();
   }
 
   Future<JobModel?> getJob(String jobId) async {
-    final row = await _client
-        .from('jobs')
-        .select()
-        .eq('id', jobId)
-        .maybeSingle();
+    final row =
+        await _client.from('jobs').select().eq('id', jobId).maybeSingle();
     return row != null ? JobModel.fromJson(row) : null;
   }
 
@@ -254,7 +265,8 @@ class SupabaseDataSource {
     if (uid == null) throw Exception('Must be authenticated to submit a claim');
     final data = await _client
         .from('place_claims')
-        .insert({'place_id': placeId, 'owner_user_id': uid, 'status': 'pending'})
+        .insert(
+            {'place_id': placeId, 'owner_user_id': uid, 'status': 'pending'})
         .select()
         .single();
     return ClaimModel.fromJson(data);
@@ -265,7 +277,8 @@ class SupabaseDataSource {
     required String status,
   }) async {
     final patch = <String, dynamic>{'status': status};
-    if (status == 'approved') patch['approved_at'] = DateTime.now().toIso8601String();
+    if (status == 'approved')
+      patch['approved_at'] = DateTime.now().toIso8601String();
     final data = await _client
         .from('place_claims')
         .update(patch)
@@ -283,14 +296,18 @@ class SupabaseDataSource {
         .select()
         .eq('owner_user_id', uid)
         .eq('status', 'approved');
-    return (data as List).cast<Map<String, dynamic>>().map(ClaimModel.fromJson).toList();
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClaimModel.fromJson)
+        .toList();
   }
 
   Future<List<ClaimModel>> getPendingClaims() async {
-    final data = await _client
-        .from('place_claims')
-        .select()
-        .eq('status', 'pending');
-    return (data as List).cast<Map<String, dynamic>>().map(ClaimModel.fromJson).toList();
+    final data =
+        await _client.from('place_claims').select().eq('status', 'pending');
+    return (data as List)
+        .cast<Map<String, dynamic>>()
+        .map(ClaimModel.fromJson)
+        .toList();
   }
 }

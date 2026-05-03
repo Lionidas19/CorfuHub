@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:corfu_shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/router/app_router.dart';
+import 'core/theme/app_theme.dart';
+import 'features/auth/auth_notifier.dart';
+import 'features/map/map_notifier.dart';
+import 'features/issues/issues_notifier.dart';
 
 const _supabaseUrl = String.fromEnvironment(
   'SUPABASE_URL',
@@ -19,24 +24,30 @@ Future<void> main() async {
   await Supabase.initialize(url: _supabaseUrl, anonKey: _supabaseAnonKey);
   final client = Supabase.instance.client;
 
-  final supabaseSource = SupabaseDataSource(client);
-  final cacheSource = CacheDataSource();
-  final mockSource = MockDataSource();
-  final logger = ErrorLoggingService(
-    client: client,
-    sourceProject: 'corfu_hub_app',
-  );
-
   final repository = AppRepositoryImpl(
-    supabase: supabaseSource,
-    cache: cacheSource,
-    mock: mockSource,
-    logger: logger,
+    supabase: SupabaseDataSource(client),
+    cache: CacheDataSource(),
+    mock: MockDataSource(),
+    logger: ErrorLoggingService(
+      client: client,
+      sourceProject: 'corfu_hub_app',
+    ),
   );
 
   runApp(
-    Provider<AppRepository>.value(
-      value: repository,
+    MultiProvider(
+      providers: [
+        Provider<AppRepository>.value(value: repository),
+        ChangeNotifierProvider(
+          create: (_) => AuthNotifier(repository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MapNotifier(repository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => IssuesNotifier(repository),
+        ),
+      ],
       child: EnvBanner(
         environment: EnvironmentEnum.fromValue(_env),
         child: const CorfuHubApp(),
@@ -45,17 +56,23 @@ Future<void> main() async {
   );
 }
 
-class CorfuHubApp extends StatelessWidget {
+class CorfuHubApp extends StatefulWidget {
   const CorfuHubApp({super.key});
 
   @override
+  State<CorfuHubApp> createState() => _CorfuHubAppState();
+}
+
+class _CorfuHubAppState extends State<CorfuHubApp> {
+  late final _router = buildRouter(context.read<AuthNotifier>());
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       title: 'CorfuHub',
-      home: Scaffold(
-        body: Center(child: Text('Resident App — Coming Soon')),
-      ),
+      theme: AppTheme.light,
+      routerConfig: _router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
-

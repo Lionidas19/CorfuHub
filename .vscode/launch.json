@@ -1,0 +1,156 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ========================================
+    // USER APP (ch-user-app)
+    // ========================================
+    {
+      "name": "User App (Local)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-user-app/lib/main.dart",
+      "cwd": "ch-user-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=http://localhost:54331",
+        "--dart-define=SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+        "--dart-define=ENV=local",
+        "--dart-define=SOURCE_PROJECT=ch-user-app"
+      ]
+    },
+    {
+      "name": "User App (Production)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-user-app/lib/main.dart",
+      "cwd": "ch-user-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:PROD_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:PROD_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=production",
+        "--dart-define=SOURCE_PROJECT=ch-user-app"
+      ]
+    },
+    {
+      "name": "User App (Staging)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-user-app/lib/main.dart",
+      "cwd": "ch-user-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:STAGING_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:STAGING_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=staging",
+        "--dart-define=SOURCE_PROJECT=ch-user-app"
+      ]
+    },
+
+    // ========================================
+    // ADMIN APP (ch-admin-app)
+    // ========================================
+    {
+      "name": "Admin App (Local)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-admin-app/lib/main.dart",
+      "cwd": "ch-admin-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=http://localhost:54331",
+        "--dart-define=SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+        "--dart-define=ENV=local",
+        "--dart-define=SOURCE_PROJECT=ch-admin-app",
+        "-d",
+        "chrome"
+      ]
+    },
+    {
+      "name": "Admin App (Production)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-admin-app/lib/main.dart",
+      "cwd": "ch-admin-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:PROD_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:PROD_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=production",
+        "--dart-define=SOURCE_PROJECT=ch-admin-app",
+        "-d",
+        "chrome"
+      ]
+    },
+    {
+      "name": "Admin App (Staging)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-admin-app/lib/main.dart",
+      "cwd": "ch-admin-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:STAGING_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:STAGING_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=staging",
+        "--dart-define=SOURCE_PROJECT=ch-admin-app",
+        "-d",
+        "chrome"
+      ]
+    },
+
+    // ========================================
+    // OWNER APP (ch-owner-app)
+    // ========================================
+    {
+      "name": "Owner App (Local)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-owner-app/lib/main.dart",
+      "cwd": "ch-owner-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=http://localhost:54331",
+        "--dart-define=SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+        "--dart-define=ENV=local",
+        "--dart-define=SOURCE_PROJECT=ch-owner-app",
+        "-d",
+        "chrome"
+      ]
+    },
+    {
+      "name": "Owner App (Production)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-owner-app/lib/main.dart",
+      "cwd": "ch-owner-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:PROD_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:PROD_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=production",
+        "--dart-define=SOURCE_PROJECT=ch-owner-app",
+        "-d",
+        "chrome"
+      ]
+    },
+    {
+      "name": "Owner App (Staging)",
+      "type": "dart",
+      "request": "launch",
+      "program": "ch-owner-app/lib/main.dart",
+      "cwd": "ch-owner-app",
+      "args": [
+        "--dart-define=SUPABASE_URL=${env:STAGING_SUPABASE_URL}",
+        "--dart-define=SUPABASE_ANON_KEY=${env:STAGING_SUPABASE_ANON_KEY}",
+        "--dart-define=ENV=staging",
+        "--dart-define=SOURCE_PROJECT=ch-owner-app",
+        "-d",
+        "chrome"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All Apps (Local)",
+      "configurations": [
+        "User App (Local)",
+        "Admin App (Local)",
+        "Owner App (Local)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

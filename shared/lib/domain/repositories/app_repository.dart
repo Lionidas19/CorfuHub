@@ -23,13 +23,18 @@ abstract class AppRepository {
   Future<void> sendPhoneOtp(String phone);
 
   /// Verifies OTP and returns the authenticated user.
-  Future<UserEntity> verifyPhoneOtp({required String phone, required String token});
+  Future<UserEntity> verifyPhoneOtp(
+      {required String phone, required String token});
 
   /// Signs out the current user.
   Future<void> signOut();
 
   /// Permanently deletes the current user's account (calls server-side RPC).
   Future<void> deleteAccount();
+
+  /// DEBUG ONLY: Sign in as a test user by UUID (bypasses phone OTP).
+  /// Throws if the user does not exist in public.users.
+  Future<UserEntity> debugSignInAsUser(String userId);
 
   // ---------------------------------------------------------------------------
   // User Settings (home pin, saved places, notification prefs)
